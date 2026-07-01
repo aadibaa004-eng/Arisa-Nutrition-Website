@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Leaf, Instagram, Mail, Phone } from 'lucide-react';
+import { Leaf, Instagram, Mail } from 'lucide-react';
 import { footerLinks, siteConfig } from '../../data/content';
 import { fadeInUp } from '../../utils/animations';
 
@@ -74,14 +74,6 @@ const Footer: React.FC = () => {
               <p className="font-semibold text-gray-700">{siteConfig.dietician.name}</p>
               
               <a 
-                href={`tel:${siteConfig.dietician.phone}`}
-                className="flex items-center gap-2 text-gray-600 hover:text-sage-green transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-                {siteConfig.dietician.phone}
-              </a>
-              
-              <a 
                 href={`mailto:${siteConfig.dietician.email}`}
                 className="flex items-center gap-2 text-gray-600 hover:text-sage-green transition-colors"
               >
@@ -110,16 +102,6 @@ const Footer: React.FC = () => {
                 className="w-10 h-10 bg-gradient-to-br from-muted-rose to-blush-pink rounded-full flex items-center justify-center text-white"
               >
                 <Instagram className="w-5 h-5" />
-              </motion.a>
-              
-              <motion.a
-                href={siteConfig.dietician.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white"
-              >
-                <Phone className="w-5 h-5" />
               </motion.a>
               
               <motion.a

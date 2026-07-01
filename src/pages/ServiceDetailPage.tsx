@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Check, HelpCircle } from 'lucide-react';
 import { getServiceBySlug } from "../data/servicesData";
-import { siteConfig } from "../data/content";
 import { fadeInUp, staggerContainer } from "../utils/animations";
 
 interface ServiceDetailPageProps {
@@ -217,16 +216,6 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ onBookConsultatio
             >
               Book a Consultation
             </motion.button>
-            <motion.a
-              href={siteConfig.dietician.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.08, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-green-500 text-white px-8 py-4 rounded-full font-semibold shadow-lg inline-block"
-            >
-              Chat on WhatsApp
-            </motion.a>
           </div>
         </motion.div>
       </div>

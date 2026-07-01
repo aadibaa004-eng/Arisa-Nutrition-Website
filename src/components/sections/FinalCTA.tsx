@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Sparkles, Leaf } from 'lucide-react';
+import { Sparkles, Leaf } from 'lucide-react';
 import { siteConfig } from '../../data/content';
 import { fadeInUp, floatingAnimation } from '../../utils/animations';
 
@@ -83,26 +83,6 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onBookConsultation }) => {
               Book a Consultation
             </motion.button>
             
-            <motion.a
-              href={siteConfig.dietician.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ 
-                scale: 1.08,
-                boxShadow: '0 10px 40px rgba(255, 255, 255, 0.3)',
-                y: -5
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 bg-white text-dark-olive px-10 py-5 rounded-full font-semibold text-lg shadow-2xl"
-            >
-              <motion.div
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <MessageCircle className="w-5 h-5" />
-              </motion.div>
-              Chat on WhatsApp
-            </motion.a>
           </div>
         </motion.div>
       </div>

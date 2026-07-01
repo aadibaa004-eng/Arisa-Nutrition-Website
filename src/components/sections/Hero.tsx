@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, CheckCircle, Phone, Mail, Instagram } from 'lucide-react';
+import { CheckCircle, Mail, Instagram } from 'lucide-react';
 import { trustIndicators, siteConfig } from '../../data/content';
 import { fadeInUp, slideInLeft, slideInRight, floatingAnimation } from '../../utils/animations';
 
@@ -54,22 +54,6 @@ const Hero: React.FC<HeroProps> = ({ onBookConsultation }) => {
               className="flex flex-wrap gap-4 mb-10"
               variants={fadeInUp}
             >
-              <motion.a
-                href={siteConfig.dietician.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ 
-                  scale: 1.08,
-                  boxShadow: '0 8px 30px rgba(34, 197, 94, 0.5)',
-                  y: -3
-                }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-semibold shadow-lg transition-all"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Chat on WhatsApp
-              </motion.a>
-              
               <motion.button
                 onClick={onBookConsultation}
                 whileHover={{ 
@@ -160,10 +144,6 @@ const Hero: React.FC<HeroProps> = ({ onBookConsultation }) => {
                 </p>
                 
                 <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-sage-green" />
-                    <span>{siteConfig.dietician.phone}</span>
-                  </div>
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-sage-green" />
                     <span className="text-xs">{siteConfig.dietician.email}</span>
