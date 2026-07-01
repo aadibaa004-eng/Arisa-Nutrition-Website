@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#f5f3f0" rx="20"/>
+  <g transform="translate(50, 50)">
+    <!-- Leaf shape -->
+    <path d="M 0 -25 Q 15 -15 15 0 Q 15 20 0 25 Q -15 20 -15 0 Q -15 -15 0 -25 Z" fill="#6b8e6f" stroke="#5a7a5f" stroke-width="1"/>
+    <!-- Leaf vein -->
+    <path d="M 0 -25 Q 0 0 0 25" stroke="#5a7a5f" stroke-width="1.5" fill="none"/>
+  </g>
+</svg>
