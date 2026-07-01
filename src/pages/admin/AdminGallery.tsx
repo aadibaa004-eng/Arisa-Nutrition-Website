@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, X, AlertCircle, Loader, Upload, Pencil, Check } from 'lucide-react';
+import { Trash2, X, AlertCircle, Loader, Upload, Pencil, Check } from 'lucide-react';
 import { api, GalleryItem } from '../../services/api';
 
 const AdminGallery: React.FC = () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Leaf } from 'lucide-react';
-import { siteConfig } from '../../data/content';
 import { fadeInUp, floatingAnimation } from '../../utils/animations';
 
 interface FinalCTAProps {
