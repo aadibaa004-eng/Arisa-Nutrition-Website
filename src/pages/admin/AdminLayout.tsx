@@ -22,7 +22,7 @@ const AdminLayout: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-sage-green border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -38,14 +38,14 @@ const AdminLayout: React.FC = () => {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-800">
+      <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-sage-green/20 rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 bg-sage-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
             <Leaf className="w-4 h-4 text-sage-green" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm">Arisa Nutrition</p>
-            <p className="text-gray-500 text-xs">Admin Panel</p>
+            <p className="text-gray-800 font-bold text-sm">Arisa Nutrition</p>
+            <p className="text-gray-400 text-xs">Admin Panel</p>
           </div>
         </div>
       </div>
@@ -60,8 +60,8 @@ const AdminLayout: React.FC = () => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
                 isActive
-                  ? 'bg-sage-green text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  ? 'bg-sage-green text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
               }`
             }
           >
@@ -77,16 +77,16 @@ const AdminLayout: React.FC = () => {
       </nav>
 
       {/* User + Logout */}
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-4 border-t border-gray-200">
         <div className="flex items-center gap-3 px-4 py-3 mb-2">
-          <div className="w-8 h-8 rounded-full bg-sage-green/20 flex items-center justify-center text-sage-green font-bold text-xs flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-sage-green/10 flex items-center justify-center text-sage-green font-bold text-xs flex-shrink-0">
             {admin.email.charAt(0).toUpperCase()}
           </div>
-          <p className="text-gray-300 text-xs truncate">{admin.email}</p>
+          <p className="text-gray-500 text-xs truncate">{admin.email}</p>
         </div>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
         >
           <LogOut className="w-4 h-4" />
           Sign Out
@@ -96,9 +96,9 @@ const AdminLayout: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-950 flex">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-gray-900 border-r border-gray-800 flex-shrink-0">
+      <aside className="hidden lg:flex w-64 flex-col bg-white border-r border-gray-200 flex-shrink-0">
         <SidebarContent />
       </aside>
 
@@ -118,7 +118,7 @@ const AdminLayout: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.25 }}
-              className="fixed inset-y-0 left-0 w-72 bg-gray-900 border-r border-gray-800 z-50 flex flex-col lg:hidden"
+              className="fixed inset-y-0 left-0 w-72 bg-white border-r border-gray-200 z-50 flex flex-col lg:hidden"
             >
               <button
                 onClick={() => setSidebarOpen(false)}
@@ -135,16 +135,16 @@ const AdminLayout: React.FC = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
-        <header className="lg:hidden flex items-center gap-4 px-4 py-4 bg-gray-900 border-b border-gray-800">
+        <header className="lg:hidden flex items-center gap-4 px-4 py-4 bg-white border-b border-gray-200">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-gray-700"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
             <Leaf className="w-4 h-4 text-sage-green" />
-            <span className="text-white font-bold text-sm">Arisa Nutrition Admin</span>
+            <span className="text-gray-800 font-bold text-sm">Arisa Nutrition Admin</span>
           </div>
         </header>
 

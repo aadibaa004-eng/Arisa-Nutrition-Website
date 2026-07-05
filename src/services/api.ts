@@ -1,10 +1,27 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function request<T = unknown>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const method = options.method || 'GET';
+  const url = `${API_BASE}${path}`;
+  
+  // Log request details
+  console.group(`🔵 API Request: ${method} ${path}`);
+  console.log('URL:', url);
+  console.log('Method:', method);
+  if (options.body) {
+    try {
+      const bodyData = JSON.parse(options.body as string);
+      console.log('Request Body:', JSON.stringify(bodyData, null, 2));
+    } catch {
+      console.log('Request Body:', options.body);
+    }
+  }
+  console.groupEnd();
+
+  const res = await fetch(url, {
     ...options,
     credentials: 'include',
     headers: {
@@ -14,6 +31,13 @@ async function request<T = unknown>(
   });
 
   const data = await res.json();
+  
+  // Log response details
+  console.group(`${res.ok ? '✅' : '❌'} API Response: ${method} ${path}`);
+  console.log('Status:', res.status);
+  console.log('Response Data:', JSON.stringify(data, null, 2));
+  console.groupEnd();
+  
   if (!res.ok) throw new Error(data.message || 'Request failed');
   return data as T;
 }
@@ -89,6 +113,7 @@ export interface BlogItem {
   _id: string;
   title: string;
   slug: string;
+  author: string;
   content: string;
   excerpt: string;
   category: string;

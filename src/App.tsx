@@ -18,6 +18,7 @@ import AdminGallery from './pages/admin/AdminGallery';
 import AdminContacts from './pages/admin/AdminContacts';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
@@ -38,11 +39,31 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="blogs" element={<AdminBlogs />} />
-            <Route path="reviews" element={<AdminReviews />} />
-            <Route path="gallery" element={<AdminGallery />} />
-            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="dashboard" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="blogs" element={
+              <ProtectedRoute>
+                <AdminBlogs />
+              </ProtectedRoute>
+            } />
+            <Route path="reviews" element={
+              <ProtectedRoute>
+                <AdminReviews />
+              </ProtectedRoute>
+            } />
+            <Route path="gallery" element={
+              <ProtectedRoute>
+                <AdminGallery />
+              </ProtectedRoute>
+            } />
+            <Route path="contacts" element={
+              <ProtectedRoute>
+                <AdminContacts />
+              </ProtectedRoute>
+            } />
           </Route>
 
           {/* Public routes — with Navbar/Footer */}

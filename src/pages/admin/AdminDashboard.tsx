@@ -14,16 +14,16 @@ const StatCard: React.FC<{
   <motion.div
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    className="bg-gray-900 border border-gray-800 rounded-2xl p-6"
+    className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm"
   >
     <div className="flex items-start justify-between mb-4">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
         <Icon className="w-5 h-5" />
       </div>
     </div>
-    <p className="text-3xl font-bold text-white mb-1">{value}</p>
-    <p className="text-gray-400 text-sm font-medium">{label}</p>
-    {sub && <p className="text-gray-600 text-xs mt-1">{sub}</p>}
+    <p className="text-3xl font-bold text-gray-800 mb-1">{value}</p>
+    <p className="text-gray-500 text-sm font-medium">{label}</p>
+    {sub && <p className="text-gray-400 text-xs mt-1">{sub}</p>}
   </motion.div>
 );
 
@@ -35,6 +35,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     api.dashboard()
       .then((res: any) => {
+        console.log('📊 Dashboard response:', JSON.stringify(res, null, 2));
         // Support both { data: {...} } and flat response shapes
         const d = res?.data ?? res;
         setStats({
@@ -51,7 +52,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-1">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-1">Dashboard</h1>
         <p className="text-gray-400 text-sm">Welcome back! Here's an overview of your content.</p>
       </div>
 
@@ -102,7 +103,7 @@ const AdminDashboard: React.FC = () => {
 
       {/* Quick links */}
       <div className="mt-8">
-        <h2 className="text-white font-semibold mb-4">Quick Actions</h2>
+        <h2 className="text-gray-700 font-semibold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Write Blog Post', href: '/admin/blogs', icon: FileText },
@@ -113,7 +114,7 @@ const AdminDashboard: React.FC = () => {
             <Link
               key={item.href}
               to={item.href}
-              className="flex items-center gap-3 bg-gray-900 border border-gray-800 hover:border-sage-green/50 rounded-xl px-4 py-3 text-gray-400 hover:text-white transition-all text-sm font-medium group"
+              className="flex items-center gap-3 bg-white border border-gray-200 hover:border-sage-green/50 rounded-xl px-4 py-3 text-gray-500 hover:text-gray-800 transition-all text-sm font-medium group shadow-sm"
             >
               <item.icon className="w-4 h-4 group-hover:text-sage-green transition-colors" />
               {item.label}
@@ -122,15 +123,15 @@ const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-8 bg-gray-900 border border-gray-800 rounded-2xl p-6">
+      <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="w-4 h-4 text-sage-green" />
-          <h2 className="text-white font-semibold text-sm">Backend Status</h2>
+          <h2 className="text-gray-700 font-semibold text-sm">Backend Status</h2>
         </div>
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`} />
-          <p className="text-gray-400 text-sm">
-            {error ? 'Cannot connect to backend at localhost:3000' : 'Connected to localhost:3000'}
+          <p className="text-gray-500 text-sm">
+            {error ? 'Cannot connect to backend' : 'Connected to backend'}
           </p>
         </div>
       </div>
