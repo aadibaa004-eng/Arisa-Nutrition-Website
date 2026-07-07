@@ -101,34 +101,28 @@ export const whyChoosePoints = [
   'Focus on long-term results',
 ];
 
+// Default fallback testimonials shown while API data loads or as backup
 export const testimonials = [
   {
-    id: 1,
+    id: '1',
     name: 'Sana K.',
     rating: 5,
     text: 'The plan was simple and easy to follow. I lost 8 kgs in 3 months without starving myself.',
-    avatar: '/avatars/avatar1.jpg',
+    avatar: '',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Ayesha M.',
     rating: 5,
     text: 'I finally learned how to eat right for my PCOS. My energy and skin improved a lot.',
-    avatar: '/avatars/avatar2.jpg',
+    avatar: '',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Rohan S.',
     rating: 5,
     text: 'Very supportive and understanding. The best decision for my health.',
-    avatar: '/avatars/avatar3.jpg',
-  },
-  {
-    id: 4,
-    name: 'Priya T.',
-    rating: 5,
-    text: 'The personalized approach made all the difference. I feel healthier and more energetic than ever!',
-    avatar: '/avatars/avatar4.jpg',
+    avatar: '',
   },
 ];
 

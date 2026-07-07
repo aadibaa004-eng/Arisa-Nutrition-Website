@@ -36,13 +36,27 @@ const AdminDashboard: React.FC = () => {
     api.dashboard()
       .then((res: any) => {
         console.log('📊 Dashboard response:', JSON.stringify(res, null, 2));
-        // Support both { data: {...} } and flat response shapes
-        const d = res?.data ?? res;
+        // Parse the backend response structure
+        const statsData = res?.data?.stats ?? res?.stats ?? res;
+        const publishedBlogs = res?.data?.latestBlogs?.filter((b: any) => b.published).length ?? 0;
+        const approvedReviews = res?.data?.latestReviews?.filter((r: any) => r.approved).length ?? 0;
+        
         setStats({
-          blogs: d?.blogs ?? { total: 0, published: 0 },
-          reviews: d?.reviews ?? { total: 0, approved: 0 },
-          gallery: d?.gallery ?? { total: 0 },
-          contacts: d?.contacts ?? { total: 0, new: 0 },
+          blogs: { 
+            total: statsData?.totalBlogs ?? 0, 
+            published: publishedBlogs 
+          },
+          reviews: { 
+            total: statsData?.totalReviews ?? 0, 
+            approved: approvedReviews 
+          },
+          gallery: { 
+            total: statsData?.totalGallery ?? 0 
+          },
+          contacts: { 
+            total: statsData?.totalContacts ?? 0, 
+            new: statsData?.newContacts ?? 0 
+          },
         });
       })
       .catch((err: any) => setError(err.message))
@@ -65,7 +79,7 @@ const AdminDashboard: React.FC = () => {
       {error && (
         <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 text-sm mb-6">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          {error} — Make sure the backend is running at localhost:3000
+          {error} — Make sure the backend API is running and accessible
         </div>
       )}
 

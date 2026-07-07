@@ -6,7 +6,6 @@ import QuoteBanner from '../components/sections/QuoteBanner';
 import WhyChooseTestimonials from '../components/sections/WhyChooseTestimonials';
 import Programs from '../components/sections/Programs';
 import HowItWorks from '../components/sections/HowItWorks';
-import Blog from '../components/sections/Blog';
 import FinalCTA from '../components/sections/FinalCTA';
 
 interface HomePageProps {
@@ -23,7 +22,6 @@ const HomePage: React.FC<HomePageProps> = ({ onBookConsultation }) => {
       <WhyChooseTestimonials />
       <Programs onBookConsultation={onBookConsultation} />
       <HowItWorks />
-      <Blog />
       <FinalCTA onBookConsultation={onBookConsultation} />
     </main>
   );

@@ -65,6 +65,7 @@ export const api = {
 
   reviews: {
     list: () => request<{ data: ReviewItem[] }>('/reviews'),
+    listUnapproved: () => request<{ data: ReviewItem[] }>('/reviews?approved=false'),
     create: (data: Partial<ReviewItem>) =>
       request('/reviews', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<ReviewItem>) =>
@@ -83,6 +84,8 @@ export const api = {
 
   contact: {
     list: () => request<{ data: ContactItem[] }>('/contact'),
+    submit: (data: any) =>
+      request('/contact', { method: 'POST', body: JSON.stringify(data) }),
     updateStatus: (id: string, status: string) =>
       request(`/contact/${id}`, {
         method: 'PATCH',
@@ -91,17 +94,29 @@ export const api = {
     delete: (id: string) => request(`/contact/${id}`, { method: 'DELETE' }),
   },
 
-  upload: async (file: File): Promise<{ url: string }> => {
+  upload: async (file: File): Promise<{ url: string; publicId?: string }> => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('image', file);
+    console.group('📸 Upload Request');
+    console.log('File name:', file.name, '| Size:', file.size, '| Type:', file.type);
+    console.log('Endpoint:', `${API_BASE}/upload`);
+    console.groupEnd();
     const res = await fetch(`${API_BASE}/upload`, {
       method: 'POST',
       credentials: 'include',
       body: formData,
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Upload failed');
-    return data;
+    console.group(`${res.ok ? '✅' : '❌'} Upload Response`);
+    console.log('Status:', res.status);
+    console.log('Full response:', JSON.stringify(data, null, 2));
+    console.groupEnd();
+    if (!res.ok) throw new Error(data.message || data.error || JSON.stringify(data) || 'Failed to upload image');
+    // Extract imageUrl from nested response: { data: { imageUrl, publicId } }
+    const imageUrl = data?.data?.imageUrl || data?.imageUrl || data?.url;
+    const publicId = data?.data?.publicId || data?.publicId;
+    if (!imageUrl) throw new Error('No image URL in upload response');
+    return { url: imageUrl, publicId };
   },
 
   dashboard: () => request<DashboardStats>('/dashboard'),
@@ -125,16 +140,19 @@ export interface BlogItem {
 
 export interface ReviewItem {
   _id: string;
-  name: string;
+  clientName: string;
   rating: number;
-  comment: string;
+  review: string;
+  city: string;
   approved: boolean;
   createdAt: string;
 }
 
 export interface GalleryItem {
   _id: string;
-  url: string;
+  image: string;
+  url?: string; // normalized from image on the frontend
+  type: 'before' | 'after' | 'general';
   caption?: string;
   createdAt: string;
 }
@@ -145,7 +163,7 @@ export interface ContactItem {
   email: string;
   phone?: string;
   message: string;
-  status: 'new' | 'read' | 'replied';
+  status: 'new' | 'contacted' | 'closed';
   createdAt: string;
 }
 

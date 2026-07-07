@@ -4,9 +4,9 @@ import { Trash2, X, AlertCircle, Loader, Mail, Phone, MessageSquare } from 'luci
 import { api, ContactItem } from '../../services/api';
 
 const STATUS_COLORS: Record<ContactItem['status'], string> = {
-  new: 'bg-blue-500/15 text-blue-400',
-  read: 'bg-gray-700 text-gray-400',
-  replied: 'bg-green-500/15 text-green-400',
+  new: 'bg-blue-100 text-blue-600',
+  contacted: 'bg-yellow-100 text-yellow-600',
+  closed: 'bg-green-100 text-green-600',
 };
 
 const AdminContacts: React.FC = () => {
@@ -20,13 +20,19 @@ const AdminContacts: React.FC = () => {
     setLoading(true);
     api.contact.list()
       .then((res: any) => {
+        console.log('📬 Contacts GET response:', JSON.stringify(res, null, 2));
         const list = Array.isArray(res) ? res
           : Array.isArray(res?.data) ? res.data
           : Array.isArray(res?.contacts) ? res.contacts
+          : Array.isArray(res?.data?.contacts) ? res.data.contacts
           : [];
+        console.log('📬 Parsed contacts list:', list.length, 'items');
         setContacts(list);
       })
-      .catch((err: any) => setError(err.message))
+      .catch((err: any) => {
+        console.error('❌ Contacts fetch error:', err);
+        setError(err.message);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -55,10 +61,10 @@ const AdminContacts: React.FC = () => {
 
   const toggleExpand = (id: string) => {
     setExpanded((prev) => prev === id ? null : id);
-    // Auto-mark as read when opened
+    // Auto-mark as contacted when opened
     const contact = contacts.find((c) => c._id === id);
     if (contact && contact.status === 'new') {
-      handleStatusChange(id, 'read');
+      handleStatusChange(id, 'contacted');
     }
   };
 
@@ -68,7 +74,7 @@ const AdminContacts: React.FC = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1 flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-800 mb-1 flex items-center gap-3">
             Contact Submissions
             {newCount > 0 && (
               <span className="text-sm bg-blue-500 text-white px-2.5 py-0.5 rounded-full font-semibold">
@@ -94,8 +100,8 @@ const AdminContacts: React.FC = () => {
         </div>
       ) : contacts.length === 0 ? (
         <div className="text-center py-20 text-gray-600">
-          <MessageSquare className="w-10 h-10 mx-auto mb-3 text-gray-700" />
-          <p className="text-lg mb-2">No messages yet</p>
+          <MessageSquare className="w-10 h-10 mx-auto mb-3 text-gray-400" />
+          <p className="text-lg mb-2 text-gray-700">No messages yet</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -103,16 +109,16 @@ const AdminContacts: React.FC = () => {
             <motion.div
               key={contact._id}
               layout
-              className={`bg-gray-900 border rounded-xl overflow-hidden transition-colors ${contact.status === 'new' ? 'border-blue-500/40' : 'border-gray-800'}`}
+              className={`bg-white border rounded-xl overflow-hidden transition-colors ${contact.status === 'new' ? 'border-blue-400 shadow-sm' : 'border-gray-200 shadow-sm'}`}
             >
               {/* Row */}
-              <button
+              <div
                 onClick={() => toggleExpand(contact._id)}
-                className="w-full flex items-center gap-4 px-5 py-4 text-left"
+                className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">
-                    <p className="text-white font-semibold truncate">{contact.name}</p>
+                    <p className="text-gray-800 font-semibold truncate">{contact.name}</p>
                     <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium capitalize ${STATUS_COLORS[contact.status]}`}>
                       {contact.status}
                     </span>
@@ -127,12 +133,12 @@ const AdminContacts: React.FC = () => {
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDelete(contact._id); }}
                     disabled={deletingId === contact._id}
-                    className="p-2 text-gray-600 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-all disabled:opacity-40"
+                    className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-all disabled:opacity-40"
                   >
                     {deletingId === contact._id ? <Loader className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                   </button>
                 </div>
-              </button>
+              </div>
 
               {/* Expanded */}
               {expanded === contact._id && (
@@ -140,22 +146,22 @@ const AdminContacts: React.FC = () => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="px-5 pb-5 border-t border-gray-800"
+                  className="px-5 pb-5 border-t border-gray-200 bg-gray-50"
                 >
-                  <p className="text-gray-300 text-sm mt-4 mb-5 leading-relaxed whitespace-pre-wrap">
+                  <p className="text-gray-700 text-sm mt-4 mb-5 leading-relaxed whitespace-pre-wrap">
                     {contact.message}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-gray-500 text-xs mr-2">Mark as:</p>
-                    {(['new', 'read', 'replied'] as ContactItem['status'][]).map((s) => (
+                    {(['new', 'contacted', 'closed'] as ContactItem['status'][]).map((s) => (
                       <button
                         key={s}
                         onClick={() => handleStatusChange(contact._id, s)}
                         className={`text-xs px-3 py-1.5 rounded-lg font-medium capitalize transition-all ${
                           contact.status === s
                             ? 'ring-2 ring-sage-green bg-sage-green/10 text-sage-green'
-                            : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         }`}
                       >
                         {s}
@@ -164,7 +170,7 @@ const AdminContacts: React.FC = () => {
 
                     <a
                       href={`mailto:${contact.email}`}
-                      onClick={() => handleStatusChange(contact._id, 'replied')}
+                      onClick={() => handleStatusChange(contact._id, 'contacted')}
                       className="ml-auto flex items-center gap-2 bg-sage-green hover:bg-olive-green text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                     >
                       <Mail className="w-3 h-3" />

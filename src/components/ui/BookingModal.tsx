@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { api } from '../../services/api';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -9,33 +10,48 @@ interface BookingModalProps {
 
 const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     phone: '',
     email: '',
-    healthGoal: '',
+    goal: '',
     consultationType: 'one-time',
     message: '',
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setShowSuccess(true);
-    
-    setTimeout(() => {
-      setShowSuccess(false);
-      onClose();
-      setFormData({
-        fullName: '',
-        phone: '',
-        email: '',
-        healthGoal: '',
-        consultationType: 'one-time',
-        message: '',
-      });
-    }, 2000);
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      console.log('🔵 Sending contact form:', formData);
+      const res = await api.contact.submit(formData);
+      console.log('✅ Contact form response:', res);
+      
+      setShowSuccess(true);
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+        onClose();
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          goal: '',
+          consultationType: 'one-time',
+          message: '',
+        });
+      }, 2000);
+    } catch (err: any) {
+      console.error('❌ Contact form error:', err);
+      setError(err.message || 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -62,7 +78,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl"
+              className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-2xl w-full max-h-[92vh] overflow-y-auto relative shadow-2xl"
             >
               <button
                 onClick={onClose}
@@ -71,13 +87,22 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                 <X className="w-6 h-6" />
               </button>
               
-              <h2 className="text-3xl font-serif font-semibold text-gray-800 mb-2">
+              <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-gray-800 mb-2">
                 Book Your Consultation
               </h2>
               <p className="text-gray-600 mb-6">
                 Fill out the form below and we'll get back to you shortly.
               </p>
               
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-red-700 text-sm"
+                >
+                  {error}
+                </motion.div>
+              )}
               {showSuccess ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -95,14 +120,14 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                       Full Name *
                     </label>
                     <input
                       type="text"
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
+                      id="name"
+                      name="name"
+                      value={formData.name}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-sage-green focus:ring-2 focus:ring-sage-green/20 outline-none transition-all"
@@ -110,7 +135,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                   
-                  <div className="grid md:grid-cols-2 gap-5">
+                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                       <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                         Phone Number *
@@ -145,14 +170,14 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                   </div>
                   
                   <div>
-                    <label htmlFor="healthGoal" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="goal" className="block text-sm font-semibold text-gray-700 mb-2">
                       Health Goal *
                     </label>
                     <input
                       type="text"
-                      id="healthGoal"
-                      name="healthGoal"
-                      value={formData.healthGoal}
+                      id="goal"
+                      name="goal"
+                      value={formData.goal}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-sage-green focus:ring-2 focus:ring-sage-green/20 outline-none transition-all"
@@ -195,14 +220,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                   
                   <motion.button
                     type="submit"
-                    whileHover={{ 
+                    disabled={isSubmitting}
+                    whileHover={!isSubmitting ? { 
                       scale: 1.04,
                       boxShadow: '0 10px 35px rgba(217, 119, 146, 0.5)'
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full bg-gradient-to-r from-rose-pink to-muted-rose text-white py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all"
+                    } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                    className="w-full bg-gradient-to-r from-rose-pink to-muted-rose text-white py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Consultation Request
+                    {isSubmitting ? 'Submitting...' : 'Submit Consultation Request'}
                   </motion.button>
                 </form>
               )}

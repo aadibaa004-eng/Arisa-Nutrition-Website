@@ -243,59 +243,126 @@ const AdminBlogs: React.FC = () => {
         <div className="flex items-center justify-center py-20">
           <div className="w-8 h-8 border-4 border-sage-green border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : blogs.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">
-          <p className="text-lg mb-2">No blog posts yet</p>
-          <p className="text-sm">Click "New Post" to create your first blog.</p>
-        </div>
       ) : (
-        <div className="space-y-3">
-          {blogs.map((blog) => (
-            <motion.div
-              key={blog._id}
-              layout
-              className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-center gap-4 shadow-sm"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-gray-800 font-medium truncate">{blog.title}</p>
-                  <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${
-                    blog.published ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
-                  }`}>
-                    {blog.published ? 'Published' : 'Draft'}
-                  </span>
-                </div>
-                <p className="text-gray-400 text-xs truncate">
-                  {blog.category && <span className="mr-2">#{blog.category}</span>}
-                  {blog.excerpt}
-                </p>
+        <>
+          {/* Published Section */}
+          <div className="mb-12">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Eye className="w-5 h-5 text-green-600" />
+              Published ({blogs.filter(b => b.published).length})
+            </h2>
+            {blogs.filter(b => b.published).length === 0 ? (
+              <div className="text-center py-12 bg-gray-50 rounded-xl text-gray-400">
+                <p className="text-sm">No published posts yet</p>
               </div>
+            ) : (
+              <div className="space-y-3">
+                {blogs.filter(b => b.published).map((blog) => (
+                  <motion.div
+                    key={blog._id}
+                    layout
+                    className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-center gap-4 shadow-sm"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-gray-800 font-medium truncate">{blog.title}</p>
+                        <span className="flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-600">
+                          Published
+                        </span>
+                      </div>
+                      <p className="text-gray-400 text-xs truncate">
+                        {blog.category && <span className="mr-2">#{blog.category}</span>}
+                        {blog.excerpt}
+                      </p>
+                    </div>
 
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <button
-                  onClick={() => togglePublish(blog)}
-                  title={blog.published ? 'Unpublish' : 'Publish'}
-                  className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
-                >
-                  {blog.published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-                <button
-                  onClick={() => openEdit(blog)}
-                  className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(blog._id)}
-                  disabled={deletingId === blog._id}
-                  className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-all disabled:opacity-40"
-                >
-                  {deletingId === blog._id ? <Loader className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                </button>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => togglePublish(blog)}
+                        title="Unpublish"
+                        className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
+                      >
+                        <EyeOff className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => openEdit(blog)}
+                        className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(blog._id)}
+                        disabled={deletingId === blog._id}
+                        className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-all disabled:opacity-40"
+                      >
+                        {deletingId === blog._id ? <Loader className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            </motion.div>
-          ))}
-        </div>
+            )}
+          </div>
+
+          {/* Drafts Section */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <EyeOff className="w-5 h-5 text-gray-400" />
+              Drafts ({blogs.filter(b => !b.published).length})
+            </h2>
+            {blogs.filter(b => !b.published).length === 0 ? (
+              <div className="text-center py-12 bg-gray-50 rounded-xl text-gray-400">
+                <p className="text-sm">No drafts yet. Start writing!</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {blogs.filter(b => !b.published).map((blog) => (
+                  <motion.div
+                    key={blog._id}
+                    layout
+                    className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-center gap-4 shadow-sm"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-gray-800 font-medium truncate">{blog.title}</p>
+                        <span className="flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">
+                          Draft
+                        </span>
+                      </div>
+                      <p className="text-gray-400 text-xs truncate">
+                        {blog.category && <span className="mr-2">#{blog.category}</span>}
+                        {blog.excerpt}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => togglePublish(blog)}
+                        title="Publish"
+                        className="p-2 text-gray-400 hover:text-green-600 rounded-lg hover:bg-green-50 transition-all"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => openEdit(blog)}
+                        className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(blog._id)}
+                        disabled={deletingId === blog._id}
+                        className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-all disabled:opacity-40"
+                      >
+                        {deletingId === blog._id ? <Loader className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
