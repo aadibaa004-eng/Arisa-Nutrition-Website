@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { api } from '../services/api';
 
 interface AdminUser {
@@ -10,21 +10,17 @@ interface AdminAuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
 
 export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [admin, setAdmin] = useState<AdminUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Check if already logged in on mount
-  useEffect(() => {
-    api.auth.me()
-      .then((res: any) => setAdmin(res.data || res))
-      .catch(() => setAdmin(null))
-      .finally(() => setIsLoading(false));
-  }, []);
+  // Don't check auth on mount - only when explicitly requested
+  // This prevents CORS errors on the homepage
 
   const login = async (email: string, password: string) => {
     const res: any = await api.auth.login(email, password);
@@ -36,8 +32,20 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     setAdmin(null);
   };
 
+  const checkAuth = async () => {
+    setIsLoading(true);
+    try {
+      const res: any = await api.auth.me();
+      setAdmin(res.data || res);
+    } catch {
+      setAdmin(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <AdminAuthContext.Provider value={{ admin, isLoading, login, logout }}>
+    <AdminAuthContext.Provider value={{ admin, isLoading, login, logout, checkAuth }}>
       {children}
     </AdminAuthContext.Provider>
   );

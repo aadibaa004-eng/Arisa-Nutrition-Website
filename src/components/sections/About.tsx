@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Award, CheckCircle } from 'lucide-react';
-import { qualifications } from '../../data/content';
-import { fadeInUp, slideInLeft, slideInRight } from '../../utils/animations';
+import { Award, CheckCircle, Mail, Instagram } from 'lucide-react';
+import { qualifications, siteConfig } from '../../data/content';
+import { fadeInUp, slideInLeft, slideInRight, floatingAnimation } from '../../utils/animations';
+import { cachedFetch, optimizeCloudinaryUrl } from '../../utils/imageCache';
+
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const About: React.FC = () => {
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    cachedFetch(`${API_BASE}/gallery`)
+      .then((res: any) => {
+        const list: any[] = Array.isArray(res) ? res
+          : Array.isArray(res?.data) ? res.data
+          : Array.isArray(res?.images) ? res.images
+          : [];
+        const match = list.find((item: any) =>
+          item.caption?.toLowerCase().includes('aadiba') ||
+          item.caption?.toLowerCase().includes('dt.')
+        );
+        if (match) {
+          const raw = match.image || match.url || match.imageUrl;
+          setProfileImage(optimizeCloudinaryUrl(raw, 600));
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
     <section id="about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,27 +40,26 @@ const About: React.FC = () => {
             variants={slideInLeft}
             className="relative"
           >
-            <div className="relative w-full h-[600px] rounded-3xl bg-gradient-to-br from-blush-pink/30 to-sage-green/20 overflow-hidden shadow-soft-lg">
-              {/* Image Placeholder */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-40 h-40 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-6xl">👩‍⚕️</span>
+            <div className="relative w-full h-[380px] sm:h-[480px] lg:h-[600px] rounded-3xl bg-gradient-to-br from-blush-pink/30 to-sage-green/20 overflow-hidden shadow-soft-lg">
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Dt. Aadiba Azeemuddin"
+                  className="w-full h-full object-cover object-top"
+                  loading="eager"
+                  decoding="async"
+                />
+              ) : (
+                /* Placeholder until image loads */
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <div className="w-40 h-40 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-6xl">👩‍⚕️</span>
+                    </div>
+                    <p className="text-gray-500 font-medium">Dt. Aadiba Azeemuddin</p>
                   </div>
-                  <p className="text-gray-500 font-medium">Dt. Aadiba Photo Placeholder</p>
                 </div>
-              </div>
-              
-              {/* Badges */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="absolute top-8 right-8 bg-gradient-to-r from-muted-rose to-blush-pink text-white px-6 py-3 rounded-full shadow-lg"
-              >
-                <p className="font-semibold text-sm">Certified Dietician</p>
-              </motion.div>
+              )}
               
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -49,6 +71,25 @@ const About: React.FC = () => {
                 <p className="font-semibold text-sm text-sage-green">Personalized Care</p>
               </motion.div>
             </div>
+
+            {/* Floating dietician card */}
+            <motion.div
+              animate={floatingAnimation}
+              className="hidden sm:block absolute -top-5 -right-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100 z-10"
+            >
+              <p className="text-gray-900 font-bold text-sm">{siteConfig.dietician.name}</p>
+              <p className="text-sage-green text-xs font-semibold mb-2">Certified Dietician</p>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <Mail className="w-3 h-3 text-sage-green" />
+                  <span>{siteConfig.dietician.email}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <Instagram className="w-3 h-3 text-sage-green" />
+                  <span>{siteConfig.dietician.instagram}</span>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
           
           {/* Right - Content */}
@@ -66,7 +107,7 @@ const About: React.FC = () => {
             </motion.p>
             
             <motion.h2 
-              className="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-6 leading-tight"
               variants={fadeInUp}
             >
               Helping you build a better relationship with food

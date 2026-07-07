@@ -48,15 +48,15 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onBookConsultation }) => {
             <Sparkles className="w-16 h-16 text-blush-pink" />
           </motion.div>
           
-          <h2 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
             Your healthiest chapter starts today.
           </h2>
           
-          <p className="text-white/90 text-xl mb-10 max-w-2xl mx-auto">
+          <p className="text-white/90 text-base sm:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto">
             You don't need a perfect diet. You need a plan that works for your life.
           </p>
           
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.button
               onClick={onBookConsultation}
               whileHover={{ 

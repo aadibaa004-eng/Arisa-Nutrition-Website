@@ -196,15 +196,6 @@ const Navbar: React.FC<NavbarProps> = ({ onBookConsultation }) => {
               >
                 Book a Consultation
               </motion.button>
-
-              <a
-                href={siteConfig.dietician.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full block text-center bg-green-500 text-white px-6 py-4 rounded-full font-semibold"
-              >
-                Chat on WhatsApp
-              </a>
             </div>
           </motion.div>
         )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Mail, Instagram } from 'lucide-react';
+import { CheckCircle, Mail, Instagram, ArrowRight, Sparkles } from 'lucide-react';
 import { trustIndicators, siteConfig } from '../../data/content';
 import { fadeInUp, slideInLeft, slideInRight, floatingAnimation } from '../../utils/animations';
 
@@ -10,152 +10,169 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onBookConsultation }) => {
   return (
-    <section id="home" className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-gradient-to-br from-cream via-white to-blush/30">
-      {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-sage-green/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-blush-pink/20 rounded-full blur-3xl" />
+    <section id="home" className="relative min-h-screen pt-28 pb-16 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf8f3] via-white to-[#fdf0f3]" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-sage-green/8 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blush-pink/15 to-transparent rounded-full blur-3xl" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[calc(100vh-7rem)]">
+          
           {/* Left Content */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={slideInLeft}
+            className="py-8"
           >
-            <motion.p 
-              className="text-sage-green font-semibold text-sm tracking-widest uppercase mb-4"
+            {/* Badge */}
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 bg-sage-green/10 border border-sage-green/20 rounded-full px-4 py-1.5 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-sage-green" />
+              <span className="text-sage-green font-semibold text-xs tracking-widest uppercase">Personalized Nutrition</span>
+            </motion.div>
+
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-serif font-bold text-gray-900 mb-6 leading-[1.1]"
               variants={fadeInUp}
             >
-              PERSONALIZED NUTRITION FOR A HEALTHIER YOU
-            </motion.p>
-            
-            <motion.h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-800 mb-6 leading-tight"
-              variants={fadeInUp}
-            >
-              Rise your health{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sage-green to-olive-green">
-                today
+              Transform your{' '}
+              <span className="relative">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sage-green via-olive-green to-sage-green">
+                  health
+                </span>
+                <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
+                  <path d="M2 6C50 2 150 2 198 6" stroke="url(#underline)" strokeWidth="2.5" strokeLinecap="round"/>
+                  <defs>
+                    <linearGradient id="underline" x1="0" y1="0" x2="200" y2="0">
+                      <stop stopColor="#9CAF88"/>
+                      <stop offset="1" stopColor="#6B8F5E"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
               </span>
+              {' '}from within
             </motion.h1>
-            
-            <motion.p 
-              className="text-gray-600 text-lg mb-8 leading-relaxed max-w-xl"
+
+            <motion.p
+              className="text-gray-500 text-base sm:text-lg mb-8 leading-relaxed max-w-lg"
               variants={fadeInUp}
             >
-              Personalized diet plans and lifestyle guidance designed to help you look better, feel stronger, 
+              Personalized diet plans and lifestyle guidance designed to help you look better, feel stronger,
               and live healthier—without extreme diets.
             </motion.p>
-            
+
             {/* CTA Buttons */}
-            <motion.div 
-              className="flex flex-wrap gap-4 mb-10"
-              variants={fadeInUp}
-            >
+            <motion.div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10" variants={fadeInUp}>
               <motion.button
                 onClick={onBookConsultation}
-                whileHover={{ 
-                  scale: 1.08,
-                  boxShadow: '0 8px 30px rgba(217, 119, 146, 0.6)',
-                  y: -3
-                }}
-                whileTap={{ scale: 0.95 }}
-                animate={{
-                  y: [0, -5, 0],
-                }}
-                transition={{
-                  y: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
-                }}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-pink to-muted-rose text-white px-8 py-4 rounded-full font-semibold shadow-lg transition-all"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-pink to-muted-rose text-white px-8 py-4 rounded-full font-semibold shadow-lg shadow-rose-pink/30 hover:shadow-xl hover:shadow-rose-pink/40 transition-all"
               >
-                Book a Consultation
+                Book a Free Consultation
+                <ArrowRight className="w-4 h-4" />
               </motion.button>
+              <motion.a
+                href="#about"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-8 py-4 rounded-full font-semibold hover:border-sage-green hover:text-sage-green transition-all shadow-sm"
+              >
+                Learn More
+              </motion.a>
             </motion.div>
-            
+
             {/* Trust Indicators */}
-            <motion.div 
-              className="grid grid-cols-2 gap-4"
-              variants={fadeInUp}
-            >
+            <motion.div className="grid grid-cols-2 gap-3" variants={fadeInUp}>
               {trustIndicators.map((indicator, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-sage-green flex-shrink-0" />
-                  <span className="text-gray-700 text-sm font-medium">{indicator}</span>
+                <div key={index} className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-sage-green/15 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle className="w-3.5 h-3.5 text-sage-green" />
+                  </div>
+                  <span className="text-gray-600 text-sm font-medium">{indicator}</span>
                 </div>
               ))}
             </motion.div>
           </motion.div>
-          
-          {/* Right Content - Image & Contact Card */}
+
+          {/* Right Content */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={slideInRight}
-            className="relative"
+            className="relative flex justify-center"
           >
-            <div className="relative">
-              {/* Main Image Placeholder */}
-              <div className="relative w-full h-[500px] rounded-3xl bg-gradient-to-br from-sage-green/20 to-blush-pink/20 overflow-hidden shadow-soft-lg">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="w-32 h-32 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-5xl">🥗</span>
-                    </div>
-                    <p className="text-gray-500 font-medium">Healthy Bowl Image Placeholder</p>
-                  </div>
-                </div>
-                
-                {/* Floating Decorative Elements */}
-                <motion.div
-                  animate={floatingAnimation}
-                  className="absolute top-10 right-10 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
-                >
-                  <span className="text-3xl">🍓</span>
-                </motion.div>
-                
-                <motion.div
-                  animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 0.5 } }}
-                  className="absolute bottom-20 left-10 w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center"
-                >
-                  <span className="text-2xl">🥑</span>
-                </motion.div>
-                
-                <motion.div
-                  animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1 } }}
-                  className="absolute top-1/2 left-5 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center"
-                >
-                  <span className="text-2xl">🍋</span>
-                </motion.div>
+            <div className="relative w-full max-w-md">
+              {/* Decorative ring */}
+              <div className="absolute -inset-4 bg-gradient-to-br from-sage-green/20 to-blush-pink/20 rounded-[2.5rem] blur-2xl" />
+
+              {/* Main Image */}
+              <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[520px] rounded-[2.5rem] overflow-hidden shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop&q=80"
+                  alt="Healthy diet bowl with fresh vegetables and grains"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+                {/* Image overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
-              
-              {/* Glassmorphism Contact Card */}
+
+              {/* Floating Emoji Badges */}
+              <motion.div animate={floatingAnimation}
+                className="hidden sm:flex absolute top-8 -right-6 w-14 h-14 bg-white rounded-2xl shadow-xl items-center justify-center rotate-6">
+                <span className="text-2xl">🍓</span>
+              </motion.div>
+              <motion.div animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 0.6 } }}
+                className="hidden sm:flex absolute bottom-24 -left-6 w-12 h-12 bg-white rounded-2xl shadow-xl items-center justify-center -rotate-6">
+                <span className="text-xl">🥑</span>
+              </motion.div>
+              <motion.div animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1.2 } }}
+                className="hidden sm:flex absolute top-1/2 -right-5 w-12 h-12 bg-white rounded-2xl shadow-xl items-center justify-center rotate-3">
+                <span className="text-xl">🍋</span>
+              </motion.div>
+
+              {/* Stats badge */}
               <motion.div
                 animate={floatingAnimation}
-                className="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-gray-100"
+                className="hidden sm:block absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100"
               >
-                <h3 className="font-serif font-semibold text-lg text-gray-800 mb-1">
-                  {siteConfig.name}
-                </h3>
-                <p className="text-sage-green font-semibold text-sm mb-3">
-                  {siteConfig.dietician.name.toUpperCase()}
-                </p>
-                
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-sage-green" />
-                    <span className="text-xs">{siteConfig.dietician.email}</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-sage-green/10 rounded-xl flex items-center justify-center">
+                    <span className="text-xl">⭐</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Instagram className="w-4 h-4 text-sage-green" />
+                  <div>
+                    <p className="text-gray-900 font-bold text-sm">200+ Clients</p>
+                    <p className="text-gray-400 text-xs">Transformed lives</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Contact Card */}
+              <motion.div
+                animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 0.4 } }}
+                className="hidden sm:block absolute -top-5 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100"
+              >
+                <p className="text-gray-900 font-bold text-sm">{siteConfig.dietician.name}</p>
+                <p className="text-sage-green text-xs font-semibold mb-2">Certified Dietician</p>
+                <div className="flex gap-2">
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Mail className="w-3 h-3 text-sage-green" />
+                    <span>Available</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Instagram className="w-3 h-3 text-sage-green" />
                     <span>{siteConfig.dietician.instagram}</span>
                   </div>
                 </div>
               </motion.div>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>

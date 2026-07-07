@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -16,9 +16,14 @@ const navItems = [
 ];
 
 const AdminLayout: React.FC = () => {
-  const { admin, isLoading, logout } = useAdminAuth();
+  const { admin, isLoading, logout, checkAuth } = useAdminAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    // Check auth status only when entering admin routes
+    checkAuth();
+  }, []);
 
   if (isLoading) {
     return (
