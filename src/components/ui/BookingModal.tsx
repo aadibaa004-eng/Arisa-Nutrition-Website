@@ -28,9 +28,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
     setIsSubmitting(true);
 
     try {
-      console.log('🔵 Sending contact form:', formData);
       const res = await api.contact.submit(formData);
-      console.log('✅ Contact form response:', res);
+      void res;
       
       setShowSuccess(true);
       

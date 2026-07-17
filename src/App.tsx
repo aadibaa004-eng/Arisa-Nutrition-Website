@@ -64,6 +64,7 @@ function App() {
                 <AdminContacts />
               </ProtectedRoute>
             } />
+            
           </Route>
 
           {/* Public routes — with Navbar/Footer */}

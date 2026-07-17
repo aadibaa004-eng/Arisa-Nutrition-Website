@@ -8,10 +8,9 @@ interface TestimonialCardProps {
   rating: number;
   text: string;
   avatar: string;
-  result?: string;
 }
 
-const TestimonialCard: React.FC<TestimonialCardProps> = ({ name, rating, text, avatar, result }) => {
+const TestimonialCard: React.FC<TestimonialCardProps> = ({ name, rating, text, avatar }) => {
   return (
     <motion.div
       variants={fadeInUp}
@@ -33,13 +32,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ name, rating, text, a
       <p className="text-gray-600 leading-relaxed text-sm flex-1 mb-5">
         "{text}"
       </p>
-
-      {/* Result badge */}
-      {result && (
-        <div className="inline-flex items-center gap-1.5 bg-sage-green/10 text-sage-green text-xs font-semibold px-3 py-1 rounded-full mb-4 self-start">
-          <span>✓</span> {result}
-        </div>
-      )}
 
       <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sage-green/30 to-blush-pink/30 flex items-center justify-center overflow-hidden flex-shrink-0">
