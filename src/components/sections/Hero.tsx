@@ -146,7 +146,7 @@ const Hero: React.FC<HeroProps> = ({ onBookConsultation }) => {
                     <span className="text-xl">⭐</span>
                   </div>
                   <div>
-                    <p className="text-gray-900 font-bold text-sm">200+ Clients</p>
+                    <p className="text-gray-900 font-bold text-sm">100+ Clients</p>
                     <p className="text-gray-400 text-xs">Transformed lives</p>
                   </div>
                 </div>

@@ -8,8 +8,6 @@ import { cachedFetch } from '../../utils/imageCache';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-const results = ['Lost 8 kgs', 'PCOS improved', 'Better energy', 'Healthier lifestyle'];
-
 interface LiveReview {
   _id: string;
   name: string;
@@ -26,12 +24,10 @@ const WhyChooseTestimonials: React.FC = () => {
   useEffect(() => {
     cachedFetch(`${API_BASE}/reviews`)
       .then((res: any) => {
-        console.log('📝 Raw reviews response:', JSON.stringify(res, null, 2));
         const list: LiveReview[] = Array.isArray(res) ? res
           : Array.isArray(res?.data) ? res.data
           : Array.isArray(res?.reviews) ? res.reviews
           : [];
-        console.log('📝 Parsed reviews list:', list);
         const approved = list.filter(r => r.approved !== false);
         // Normalize field names: API may use 'clientName'/'review' or 'name'/'comment'
         const normalized = approved.map(r => ({
@@ -39,23 +35,21 @@ const WhyChooseTestimonials: React.FC = () => {
           name: (r as any).clientName || r.name || 'Client',
           comment: (r as any).review || r.comment || '',
         }));
-        console.log('📝 Normalized reviews:', normalized);
         if (normalized.length > 0) setLiveReviews(normalized);
       })
-      .catch((err) => { console.error('❌ Reviews fetch error:', err); });
+      .catch(() => {});
   }, []);
 
   // Use live reviews if available, else fall back to hardcoded
   const displayItems = liveReviews.length > 0
-    ? liveReviews.map((r, i) => ({
+    ? liveReviews.map((r) => ({
         id: r._id,
         name: r.name,
         rating: r.rating,
         text: r.comment,
         avatar: '',
-        result: results[i % results.length],
       }))
-    : fallbackTestimonials.map((t, i) => ({ ...t, result: results[i % results.length] }));
+    : fallbackTestimonials.map((t) => ({ ...t }));
 
   const scroll = (dir: 'left' | 'right') => {
     const next = dir === 'right'
@@ -86,7 +80,7 @@ const WhyChooseTestimonials: React.FC = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sage-green to-olive-green">Real results.</span>
           </h2>
           <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            Join 200+ clients who transformed their health with personalized nutrition.
+            Join 100+ clients who transformed their health with personalized nutrition.
           </p>
         </motion.div>
 
@@ -97,7 +91,7 @@ const WhyChooseTestimonials: React.FC = () => {
           className="grid grid-cols-2 gap-3 mb-12"
         >
           {[
-            { value: '200+', label: 'Happy Clients' },
+            { value: '100+', label: 'Happy Clients' },
             { value: '4.9★', label: 'Average Rating' },
             { value: '95%', label: 'Success Rate' },
             { value: '3+', label: 'Years Experience' },
@@ -147,7 +141,7 @@ const WhyChooseTestimonials: React.FC = () => {
                 <div className="flex gap-0.5 mb-1">
                   {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
                 </div>
-                <p className="text-gray-700 text-sm font-medium">Rated 4.9/5 by 200+ clients</p>
+                <p className="text-gray-700 text-sm font-medium">Rated 4.9/5 by 100+ clients</p>
               </div>
             </div>
           </motion.div>
@@ -172,7 +166,6 @@ const WhyChooseTestimonials: React.FC = () => {
                     rating={item.rating}
                     text={item.text}
                     avatar={item.avatar}
-                    result={item.result}
                   />
                 </div>
               ))}

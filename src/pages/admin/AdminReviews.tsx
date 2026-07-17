@@ -25,23 +25,19 @@ const AdminReviews: React.FC = () => {
 
       // Fetch all reviews and filter on client-side
       const allReviewsRes = await api.reviews.list().catch((err) => {
-        console.error('❌ Failed to fetch reviews:', err);
         throw err;
       });
 
       const allReviews = parseList(allReviewsRes);
-      console.log('✅ Fetched total reviews:', allReviews.length);
 
       // Filter by approved status
       const approvedList = allReviews.filter(r => r.approved === true);
       const unapprovedList = allReviews.filter(r => r.approved === false);
       
-      console.log('✅ Filtered reviews - Approved:', approvedList.length, 'Unapproved:', unapprovedList.length);
       setApproved(approvedList);
       setUnapproved(unapprovedList);
       setError(''); // Clear any previous errors
     } catch (err: any) {
-      console.error('❌ loadReviews error:', err);
       setError('Failed to load reviews: ' + err.message);
     } finally {
       setLoading(false);
@@ -78,13 +74,11 @@ const AdminReviews: React.FC = () => {
         city: form.city?.trim(),
         approved: form.approved,
       };
-      console.log('📝 Creating review with payload:', JSON.stringify(payload, null, 2));
       const created: any = await api.reviews.create(payload);
       // Backend ignores approved on creation (defaults to false), so approve separately
       if (form.approved) {
         const createdId = created?.data?._id ?? created?._id;
         if (createdId) {
-          console.log('📝 Approving review:', createdId);
           await api.reviews.update(createdId, { approved: true });
         }
       }
@@ -92,7 +86,6 @@ const AdminReviews: React.FC = () => {
       setForm({ clientName: '', rating: 5, review: '', city: '', approved: true });
       loadReviews();
     } catch (err: any) {
-      console.error('❌ Review creation error:', err.message);
       setError(err.message);
     } finally {
       setSaving(false);
@@ -101,14 +94,9 @@ const AdminReviews: React.FC = () => {
 
   const toggleApprove = async (review: ReviewItem) => {
     try {
-      console.log(`🔄 Toggling review ${review._id} from approved=${review.approved} to approved=${!review.approved}`);
       await api.reviews.update(review._id, { approved: !review.approved });
-      console.log('✅ Review updated successfully, reloading...');
-      // Wait for loadReviews to complete before finishing
       await loadReviews();
-      console.log('✅ Reviews reloaded');
     } catch (err: any) {
-      console.error('❌ toggleApprove error:', err);
       setError('Failed to update review: ' + (err.message || 'Unknown error'));
     }
   };
