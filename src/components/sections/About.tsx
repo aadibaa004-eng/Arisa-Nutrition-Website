@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Award, CheckCircle, Mail, Instagram } from 'lucide-react';
 import { qualifications, siteConfig } from '../../data/content';
 import { fadeInUp, slideInLeft, slideInRight, floatingAnimation } from '../../utils/animations';
-import { cachedFetch, optimizeCloudinaryUrl } from '../../utils/imageCache';
+import { cachedFetch, optimizeCloudinaryUrl } from '../../utils/imageCache'; 
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
