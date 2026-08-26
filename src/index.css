@@ -68,3 +68,36 @@ body {
   background-color: #F4D9DD;
   color: #5A6B52;
 }
+
+/* Gallery card shine sweep */
+@keyframes shineSweep {
+  from {
+    transform: translateX(-150%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(250%) skewX(-18deg);
+  }
+}
+
+.shine-sweep {
+  transform: translateX(-150%) skewX(-18deg);
+}
+
+.group:hover .shine-sweep {
+  animation: shineSweep 0.9s ease forwards;
+}
+
+/* Slow animated gradient text */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% auto;
+  animation: gradientShift 6s ease-in-out infinite;
+}

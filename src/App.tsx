@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminBlogs from './pages/admin/AdminBlogs';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminGallery from './pages/admin/AdminGallery';
+import AdminGalleryCategory from './pages/admin/AdminGalleryCategory';
 import AdminContacts from './pages/admin/AdminContacts';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { Navigate } from 'react-router-dom';
@@ -57,6 +58,11 @@ function App() {
             <Route path="gallery" element={
               <ProtectedRoute>
                 <AdminGallery />
+              </ProtectedRoute>
+            } />
+            <Route path="gallery/:categoryId" element={
+              <ProtectedRoute>
+                <AdminGalleryCategory />
               </ProtectedRoute>
             } />
             <Route path="contacts" element={

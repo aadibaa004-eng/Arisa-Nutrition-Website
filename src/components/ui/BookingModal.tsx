@@ -45,9 +45,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
           message: '',
         });
       }, 2000);
-    } catch (err: any) {
+    } catch (err) {
       console.error('❌ Contact form error:', err);
-      setError(err.message || 'Failed to submit. Please try again.');
+      setError((err instanceof Error ? err.message : 'Failed to submit. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }
