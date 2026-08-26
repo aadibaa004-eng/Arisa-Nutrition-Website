@@ -1,5 +1,36 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+// Shared multipart uploader for category + uncategorized gallery images
+async function postGalleryImages(
+  path: string,
+  files: File[],
+  metadata?: { title?: string; description?: string }[]
+): Promise<CategoryImage[]> {
+  const formData = new FormData();
+  files.forEach((file) => formData.append('images', file));
+  if (metadata && metadata.length > 0) {
+    formData.append('metadata', JSON.stringify(metadata));
+  }
+  console.group('📸 Gallery Images Upload Request');
+  console.log('Endpoint:', `${API_BASE}${path}`);
+  files.forEach((f) => console.log('File:', f.name, '| Size:', f.size, '| Type:', f.type));
+  if (metadata) console.log('Metadata:', JSON.stringify(metadata));
+  console.groupEnd();
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to upload images');
+  const created = Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray(data?.data?.images)
+    ? data.data.images
+    : [];
+  return created as CategoryImage[];
+}
+
 async function request<T = unknown>(
   path: string,
   options: RequestInit = {}
@@ -82,6 +113,58 @@ export const api = {
     delete: (id: string) => request(`/gallery/${id}`, { method: 'DELETE' }),
   },
 
+  galleryCategories: {
+    list: () =>
+      request<{ success: boolean; data: GalleryCategory[] }>('/gallery/categories'),
+    get: (id: string, includeImages = false) =>
+      request<{ success: boolean; data: GalleryCategory & { images?: CategoryImage[] } }>(
+        `/gallery/categories/${id}${includeImages ? '?include_images=true' : ''}`
+      ),
+    create: (data: { name: string; isActive?: boolean }) =>
+      request<{ success: boolean; message: string; data: GalleryCategory }>(
+        '/gallery/categories',
+        { method: 'POST', body: JSON.stringify(data) }
+      ),
+    update: (id: string, data: { name?: string; isActive?: boolean }) =>
+      request<{ success: boolean; message: string; data: GalleryCategory }>(
+        `/gallery/categories/${id}`,
+        { method: 'PUT', body: JSON.stringify(data) }
+      ),
+    // Backend status endpoint requires snake_case
+    setStatus: (id: string, isActive: boolean) =>
+      request<{ success: boolean; message: string; data: GalleryCategory }>(
+        `/gallery/categories/${id}/status`,
+        { method: 'PATCH', body: JSON.stringify({ is_active: isActive }) }
+      ),
+    remove: (id: string) =>
+      request<{ success: boolean; message: string; data: { deletedImages: number } }>(
+        `/gallery/categories/${id}`,
+        { method: 'DELETE' }
+      ),
+    listImages: (categoryId: string) =>
+      request<{ success: boolean; data: CategoryImage[] }>(
+        `/gallery/categories/${categoryId}/images`
+      ),
+    uploadImages: (categoryId: string, files: File[], metadata?: { title?: string; description?: string }[]) =>
+      postGalleryImages(`/gallery/categories/${categoryId}/images`, files, metadata),
+    // Updates an image's title and/or description (metadata only)
+    updateImage: (imageId: string, data: { title?: string; description?: string }) =>
+      request<{ success: boolean; message: string; data: CategoryImage }>(
+        `/gallery/images/${imageId}`,
+        { method: 'PATCH', body: JSON.stringify(data) }
+      ),
+    deleteImage: (imageId: string) =>
+      request(`/gallery/images/${imageId}`, { method: 'DELETE' }),
+  },
+
+  // Images with no category assignment (shown outside categories)
+  galleryUncategorized: {
+    list: () =>
+      request<{ success: boolean; data: CategoryImage[] }>('/gallery/images'),
+    uploadImages: (files: File[], metadata?: { title?: string; description?: string }[]) =>
+      postGalleryImages('/gallery/images', files, metadata),
+  },
+
   contact: {
     list: () => request<{ data: ContactItem[] }>('/contact'),
     submit: (data: any) =>
@@ -154,6 +237,27 @@ export interface GalleryItem {
   url?: string; // normalized from image on the frontend
   type: 'before' | 'after' | 'general';
   caption?: string;
+  createdAt: string;
+}
+
+export interface GalleryCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  isActive: boolean;
+  imageCount?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CategoryImage {
+  _id: string;
+  categoryId?: string | null;
+  imageUrl: string;
+  publicId?: string;
+  title?: string;
+  description?: string;
   createdAt: string;
 }
 

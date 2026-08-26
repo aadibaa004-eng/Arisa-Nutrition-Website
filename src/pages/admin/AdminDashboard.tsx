@@ -121,7 +121,7 @@ const AdminDashboard: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Write Blog Post', href: '/admin/blogs', icon: FileText },
-            { label: 'Add Gallery Photo', href: '/admin/gallery', icon: Image },
+            { label: 'Manage Gallery', href: '/admin/gallery', icon: Image },
             { label: 'Manage Reviews', href: '/admin/reviews', icon: Star },
             { label: 'View Messages', href: '/admin/contacts', icon: MessageSquare },
           ].map((item) => (
