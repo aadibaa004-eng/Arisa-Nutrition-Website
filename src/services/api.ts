@@ -104,6 +104,28 @@ export const api = {
     delete: (id: string) => request(`/reviews/${id}`, { method: 'DELETE' }),
   },
 
+  reviewScreenshots: {
+    listAll: () =>
+      request<{ success: boolean; data: ReviewScreenshot[] }>('/reviews/screenshots'),
+    listForReview: (reviewId: string) =>
+      request<{ success: boolean; data: ReviewScreenshot[] }>(`/reviews/${reviewId}/screenshots`),
+    upload: async (reviewId: string, files: File[], caption?: string) => {
+      const formData = new FormData();
+      files.forEach((file) => formData.append('images', file));
+      if (caption) formData.append('caption', caption);
+      const res = await fetch(`${API_BASE}/reviews/${reviewId}/screenshots`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to upload screenshots');
+      return data;
+    },
+    delete: (reviewId: string, screenshotId: string) =>
+      request(`/reviews/${reviewId}/screenshots/${screenshotId}`, { method: 'DELETE' }),
+  },
+
   gallery: {
     list: () => request<{ data: GalleryItem[] }>('/gallery'),
     add: (data: Partial<GalleryItem>) =>
@@ -227,6 +249,16 @@ export interface ReviewItem {
   rating: number;
   review: string;
   city: string;
+  approved: boolean;
+  createdAt: string;
+}
+
+export interface ReviewScreenshot {
+  _id: string;
+  reviewId: string;
+  imageUrl: string;
+  publicId?: string;
+  caption: string;
   approved: boolean;
   createdAt: string;
 }
