@@ -5,6 +5,7 @@ import { whyChoosePoints, testimonials as fallbackTestimonials } from '../../dat
 import TestimonialCard from '../ui/TestimonialCard';
 import { fadeInUp, slideInLeft } from '../../utils/animations';
 import { cachedFetch } from '../../utils/imageCache';
+import type { ReviewScreenshot } from '../../services/api';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -19,6 +20,7 @@ interface LiveReview {
 const WhyChooseTestimonials: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [liveReviews, setLiveReviews] = useState<LiveReview[]>([]);
+  const [screenshotsByReview, setScreenshotsByReview] = useState<Map<string, ReviewScreenshot[]>>(new Map());
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +31,6 @@ const WhyChooseTestimonials: React.FC = () => {
           : Array.isArray(res?.reviews) ? res.reviews
           : [];
         const approved = list.filter(r => r.approved !== false);
-        // Normalize field names: API may use 'clientName'/'review' or 'name'/'comment'
         const normalized = approved.map(r => ({
           ...r,
           name: (r as any).clientName || r.name || 'Client',
@@ -38,9 +39,25 @@ const WhyChooseTestimonials: React.FC = () => {
         if (normalized.length > 0) setLiveReviews(normalized);
       })
       .catch(() => {});
+
+    // Fetch approved screenshots
+    cachedFetch(`${API_BASE}/reviews/screenshots`)
+      .then((res: any) => {
+        const list: ReviewScreenshot[] = Array.isArray(res?.data) ? res.data
+          : Array.isArray(res) ? res
+          : [];
+        const grouped = new Map<string, ReviewScreenshot[]>();
+        list.forEach((s) => {
+          const reviewId = typeof s.reviewId === 'string' ? s.reviewId : (s.reviewId as any)?._id;
+          if (!reviewId) return;
+          if (!grouped.has(reviewId)) grouped.set(reviewId, []);
+          grouped.get(reviewId)!.push(s);
+        });
+        if (grouped.size > 0) setScreenshotsByReview(grouped);
+      })
+      .catch(() => {});
   }, []);
 
-  // Use live reviews if available, else fall back to hardcoded
   const displayItems = liveReviews.length > 0
     ? liveReviews.map((r) => ({
         id: r._id,
@@ -48,8 +65,9 @@ const WhyChooseTestimonials: React.FC = () => {
         rating: r.rating,
         text: r.comment,
         avatar: '',
+        screenshots: screenshotsByReview.get(r._id) || [],
       }))
-    : fallbackTestimonials.map((t) => ({ ...t }));
+    : fallbackTestimonials.map((t) => ({ ...t, screenshots: [] }));
 
   const scroll = (dir: 'left' | 'right') => {
     const next = dir === 'right'
@@ -166,6 +184,7 @@ const WhyChooseTestimonials: React.FC = () => {
                     rating={item.rating}
                     text={item.text}
                     avatar={item.avatar}
+                    screenshots={(item as any).screenshots}
                   />
                 </div>
               ))}
